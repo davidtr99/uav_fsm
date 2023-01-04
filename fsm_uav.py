@@ -61,7 +61,7 @@ def repulsion_forces(uavs, cm):
 
 def friction_forces(uavs, uavs_velocities):
     for id, uav_pose in enumerate(uavs):
-        if np.linalg.norm(uavs_velocities[id]) < 0.1:
+        if np.linalg.norm(uavs_velocities[id]) < 0.05:
             uavs_forces[id]['f_friction'] = np.zeros(3)
         else:
             uavs_forces[id]['f_friction'] = - K_FRICTION * uavs_velocities[id]/np.linalg.norm(uavs_velocities[id])
@@ -96,9 +96,11 @@ dt = 0.1
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
+# cm = np.array([0.0,0.0,0.0])
 while True:
     ax.clear()
     cm = center_of_mass(uavs)
+    # cm += np.array([0.01,0.00,0.00])
     group_forces(uavs, cm)
     repulsion_forces(uavs, cm)
     friction_forces(uavs, uavs_velocities)
