@@ -2,14 +2,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import math
+import time
 
 MAP_SIZE = (10, 10, 10) # m x m x m
+
+N_OBSTACLES = 50
+N_UAVS = 3
+
 K_GROUP = 1.5
 K_REPULSION = 1.0
 K_FRICTION = 0.25
+K_OBSTACLES = 1.0
+
 VEL_MAX = 1.0
-N_UAVS = 3
-F_FRICTION_STATIC = 0.1
+MIN_FORCE = 0.1
 
 # Función generica para graficar puntos en 3D
 def plot_points(ax, points, color='b'):
@@ -60,6 +66,7 @@ def repulsion_forces(uavs, cm):
         f_repulsion +=  - dir / math.pow(dist,B)
         uavs_forces[id1]['f_repulsion'] = K_REPULSION * f_repulsion
 
+# Función que calcula la fuerza de fricción, constante y contraria a la velocidad
 def friction_forces(uavs, uavs_velocities):
     for id, uav_pose in enumerate(uavs):
         if np.linalg.norm(uavs_velocities[id]) < 0.05:
@@ -67,13 +74,24 @@ def friction_forces(uavs, uavs_velocities):
         else:
             uavs_forces[id]['f_friction'] = - K_FRICTION * uavs_velocities[id]/np.linalg.norm(uavs_velocities[id])
 
+def obstacles_forces(uavs, obstacles):
+    B = 4.0
+    for id, uav_pose in enumerate(uavs):
+        f_obstacles = np.zeros(3)
+        for obstacle in obstacles:
+            dir = obstacle - uav_pose
+            dir = dir / np.linalg.norm(dir)
+            dist = np.linalg.norm(obstacle - uav_pose)
+            f_obstacles += - dir / math.pow(dist,B)
+        uavs_forces[id]['f_obstacles'] = K_OBSTACLES * f_obstacles
+
 def resultant_forces(uavs_forces, forces_keys):
     for id, uav_forces in enumerate(uavs_forces):
         f_resultant = np.zeros(3)
         for key in forces_keys:
             if key != 'f_friction':
                 f_resultant += uav_forces[key]
-        if np.linalg.norm(f_resultant) < F_FRICTION_STATIC:
+        if np.linalg.norm(f_resultant) < MIN_FORCE:
             f_resultant = np.zeros(3)
         
         f_resultant += uav_forces['f_friction']
@@ -89,37 +107,50 @@ def apply_forces(uavs, uavs_forces, dt):
 
 ##############################################
 uavs = generate_points(N_UAVS)
+# obstacles = generate_points(N_OBSTACLES)
+obstacles = np.array([])
 uavs_velocities = [np.zeros(3) for _ in range(len(uavs))]
 uavs_forces = [{} for i in range(len(uavs))]
-forces_keys = ['f_group','f_repulsion','f_friction']
+forces_keys = ['f_group','f_repulsion','f_friction','f_obstacles']
 dt = 0.1
-
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
 # cm = np.array([-MAP_SIZE[0]/2,0.0,0.0])
 # i = 0
 while True:
+    tic = time.time()
     ax.clear()
     cm = center_of_mass(uavs)
-    # if i < 200:
-    #     cm += np.array([0.01,0.00,0.00])
+    # if i < 1000:
+    #     cm += np.array([0.005,0.00,0.00])
     # i+=1
     # cm += np.array([0.01,0.00,0.00])
     group_forces(uavs, cm)
     repulsion_forces(uavs, cm)
     friction_forces(uavs, uavs_velocities)
+    obstacles_forces(uavs, obstacles)
     resultant_forces(uavs_forces, forces_keys)
     plot_points(ax, uavs, color='b')
     plot_points(ax, np.array([cm]), color='r')
+    # plot_points(ax, obstacles, color='g')
     plot_forces(ax, uavs, uavs_forces, 'f_repulsion', color='r')
     plot_forces(ax, uavs, uavs_forces, 'f_group', color='g')
+    # plot_forces(ax, uavs, uavs_forces, 'f_obstacles', color='y')
     plot_forces(ax, uavs, uavs_forces, 'f_resultant', color='k')
     ax.set_xlim(-0.5*MAP_SIZE[0], 0.5*MAP_SIZE[0])
     ax.set_ylim(-0.5*MAP_SIZE[1], 0.5*MAP_SIZE[1])
     ax.set_zlim(-0.5*MAP_SIZE[2], 0.5*MAP_SIZE[2])
     apply_forces(uavs, uavs_forces, dt)
-    plt.pause(dt)
+
+    tac = time.time()
+    if tac - tic < dt:
+        time.sleep(dt - (tac - tic))
+    plt.pause(0.0001)
+
+    if plt.get_fignums() == []:
+        break
+
 
 
     
