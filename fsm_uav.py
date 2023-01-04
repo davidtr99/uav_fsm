@@ -96,10 +96,14 @@ dt = 0.1
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
-# cm = np.array([0.0,0.0,0.0])
+# cm = np.array([-MAP_SIZE[0]/2,0.0,0.0])
+# i = 0
 while True:
     ax.clear()
     cm = center_of_mass(uavs)
+    # if i < 200:
+    #     cm += np.array([0.01,0.00,0.00])
+    # i+=1
     # cm += np.array([0.01,0.00,0.00])
     group_forces(uavs, cm)
     repulsion_forces(uavs, cm)
