@@ -123,9 +123,8 @@ while True:
     ax.clear()
     cm = center_of_mass(uavs)
     # if i < 1000:
-    #     cm += np.array([0.005,0.00,0.00])
+    #     cm += np.array([0.01,0.00,0.00])
     # i+=1
-    # cm += np.array([0.01,0.00,0.00])
     group_forces(uavs, cm)
     repulsion_forces(uavs, cm)
     friction_forces(uavs, uavs_velocities)
