@@ -8,29 +8,18 @@ This project aims to model the interacton of UAVs by using artificial forces. Th
 
 This repository contains a python script to simulate the proposed forces testing different parameter settings in various scenarios.
 
-This model has been tested in a simulation environment using Gazebo & ROS & Ardupilot based on the tools provided by [Intelligent-Quads](https://github.com/Intelligent-Quads) and the Ardupilot's SITL model.
+This model has been tested in a simulation environment using Gazebo & ROS melodic and noetic & Ardupilot based on the tools provided by [Intelligent-Quads](https://github.com/Intelligent-Quads) and the Ardupilot's SITL model.
 
 The used repositories have been forked and modified in order to implement a realistic 4-UAV swarm simulation using our force model.
-- [IQ_SIM](https://github.com/davidtr99/iq_sim): Simulation Tools
-- [IQ_GNC](https://github.com/davidtr99/iq_gnc): Guidance Navigation Control using our forces model.
 - [Ardupilot's SITL v4.3.1](https://github.com/davidtr99/ardupilot/tree/Copter-4.3.1): Adapted to 4-UAV swarm instances
+- [IQ_SIM](https://github.com/davidtr99/iq_sim): Simulation Tools (only changed spawn angles in the file multi-drone.world)
+- [IQ_GNC](https://github.com/davidtr99/iq_gnc): Guidance Navigation Control using our forces model.
+
 
 \todo images
 
 # Installation
 
-## IQ_SIM
-Simply clone our fork:
-```
-git clone https://github.com/davidtr99/iq_sim
-```
-
-
-## IQ_GNC
-Simply clone our fork:
-```
-git clone https://github.com/davidtr99/iq_gnc
-```
 ## Ardupilot
 
 ### Clone ArduPilot
@@ -79,4 +68,92 @@ Run SITL (Software In The Loop) once to set params:
 ```
 cd ~/ardupilot/ArduCopter
 sim_vehicle.py -w
+```
+
+## Setup your catkin workspace
+
+ We use `catkin build` instead of `catkin_make`. Please install the following:
+```
+sudo apt-get install python-wstool python-rosinstall-generator python-catkin-tools
+```
+
+Then, initialize the catkin workspace:
+```
+mkdir -p ~/catkin_ws/src
+cd ~/catkin_ws
+catkin init
+```
+
+## IQ_SIM
+
+### Install dependencies:
+
+Install the following ROS packages:
+```
+sudo apt install ros-<rosdistro>-mavros
+
+sudo apt install ros-<rosdistro>-mavros-extras
+
+```
+or do it  from source:
+```
+cd ~/catkin_ws
+wstool init ~/catkin_ws/src
+
+rosinstall_generator --upstream mavros | tee /tmp/mavros.rosinstall
+rosinstall_generator mavlink | tee -a /tmp/mavros.rosinstall
+wstool merge -t src /tmp/mavros.rosinstall
+wstool update -t src
+rosdep install --from-paths src --ignore-src --rosdistro `echo $ROS_DISTRO` -y
+
+catkin build
+```
+Add a line to end of `~/.bashrc` by running the following command:
+```
+echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
+```
+
+update global variables
+```
+source ~/.bashrc
+```
+
+install geographiclib dependancy 
+```
+sudo ~/catkin_ws/src/mavros/mavros/scripts/install_geographiclib_datasets.sh
+```
+
+
+Clone our fork:
+```
+cd ~/catkin_ws/src
+git clone https://github.com/davidtr99/iq_sim
+```
+Our repository should now be copied to `~/catkin_ws/src/iq_sim/` (don't run this line. This is just saying that if you browse in the file manager, you will see those folders).
+
+run the following to tell gazebo where to look for the iq models 
+```
+echo "GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:$HOME/catkin_ws/src/iq_sim/models" >> ~/.bashrc
+```
+Inside `catkin_ws`, run `catkin build`:
+
+```
+cd ~/catkin_ws
+catkin build
+```
+update global variables
+```
+source ~/.bashrc
+```
+
+## IQ_GNC
+Simply clone our fork:
+```
+git clone https://github.com/davidtr99/iq_gnc
+```
+
+and build the workspace:
+```
+cd ~/catkin_ws/
+catkin build
 ```
