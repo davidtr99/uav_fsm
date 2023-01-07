@@ -4,7 +4,7 @@
 Authors: David Tejero Ruiz & Miguel Gil Castilla
 
 ## About
-This project aims to model the interacton of UAVs by using artificial forces. This architecture allow to generate emergent swarm behaviours from individual simpler rules.
+This project aims to model the interacton of UAVs by using artificial forces. This architecture allows to generate emergent swarm behaviours from simpler individual rules. Automatic formation of regular polyhedron, obstable avoidance, follow-the-leader algorithm implementation, etc.
 
 This repository contains a python script to simulate the proposed forces testing different parameter settings in various scenarios.
 
