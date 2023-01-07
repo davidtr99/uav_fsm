@@ -226,5 +226,5 @@ rosrun iq_gnc fsm_dev.py
 
 ```
 
-Now you
+Now you can see the emerging behaviour caused by the force model algorithim.
 
