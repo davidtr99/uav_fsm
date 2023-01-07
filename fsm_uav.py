@@ -31,11 +31,11 @@ def generate_points(n):
     points = np.random.rand(n, 3) * MAP_SIZE/2  * np.random.choice([-1, 1], size=(n, 3))
     return points
 
-# Centro de masas 
+# Calculo del centro de masas 
 def center_of_mass(points):
     return np.mean(points, axis=0)
 
-# Función que calcula la fuerza de grupo
+# Funcion que calcula la fuerza de grupo hacia el centro de masas
 def group_forces(uavs, cm):
     for id, uav_pose in enumerate(uavs):
         dir = cm - uav_pose
@@ -46,7 +46,7 @@ def group_forces(uavs, cm):
         else:
             uavs_forces[id]['f_group'] = K_GROUP * dir
 
-# Función que calcula la fuerza de repulsión al resto de los UAVs
+# Función que calcula la fuerza de repulsión al resto de los UAVs y al centro de masas
 def repulsion_forces(uavs, cm):
     B = 2.0
     for id1, uav_pose1 in enumerate(uavs):
@@ -74,6 +74,7 @@ def friction_forces(uavs, uavs_velocities):
         else:
             uavs_forces[id]['f_friction'] = - K_FRICTION * uavs_velocities[id]/np.linalg.norm(uavs_velocities[id])
 
+# Función que calcula la fuerza de repulsión hacia los obstáculos
 def obstacles_forces(uavs, obstacles):
     B = 4.0
     for id, uav_pose in enumerate(uavs):
@@ -85,6 +86,7 @@ def obstacles_forces(uavs, obstacles):
             f_obstacles += - dir / math.pow(dist,B)
         uavs_forces[id]['f_obstacles'] = K_OBSTACLES * f_obstacles
 
+# Función que calcula la fuerza resultante a aplicar a cada UAV
 def resultant_forces(uavs_forces, forces_keys):
     for id, uav_forces in enumerate(uavs_forces):
         f_resultant = np.zeros(3)
@@ -97,6 +99,7 @@ def resultant_forces(uavs_forces, forces_keys):
         f_resultant += uav_forces['f_friction']
         uavs_forces[id]['f_resultant'] = f_resultant
 
+# Aplicamos las fuerzas a los UAVs
 def apply_forces(uavs, uavs_forces, dt):
     for id, uav_pose in enumerate(uavs):
         uavs_velocities[id] = uavs_velocities[id] + uavs_forces[id]['f_resultant'] * dt
