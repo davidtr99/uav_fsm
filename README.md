@@ -157,3 +157,74 @@ and build the workspace:
 cd ~/catkin_ws/
 catkin build
 ```
+
+# Tutorial
+
+To demonstrate the functionalities you can try this:
+
+At first go to your workspace and charge the enviroment variables:
+```
+cd ~/catkin_ws/
+source devel/setup.bash
+```
+
+Then run the simulator:
+```
+roslaunch iq_sim multi_drone.launch
+```
+
+Open four new terminals and do the following:
+
+```
+# in all of them:
+cd ~/ardupilot/ArduCopter/
+
+# first terminal:
+sim_vehicle.py -v ArduCopter -f gazebo-drone1 -I0
+# second:
+sim_vehicle.py -v ArduCopter -f gazebo-drone2 -I1
+# third:
+sim_vehicle.py -v ArduCopter -f gazebo-drone3 -I2
+# forth:
+sim_vehicle.py -v ArduCopter -f gazebo-drone4 -I3
+
+```
+
+The last commands will create four instances of the ardupilot SITL, which you will connect later to the simulation in gazebo.
+
+Until you can see that each one is using the GPS, please do not continue with the tutorial.
+
+...
+
+All of them done? You are a beast, ok so we can keep going.
+
+Open a new terminal (yes, another one we have two weeks to do this what do you want?) and enable the mavros instances:
+
+```
+roslaunch iq_sim multi-apm.launch
+```
+
+We have all the necessary tools to begin our experiments. 
+
+You can try these last commands to watch the algorithim working:
+
+```
+#new terminal
+
+cd ~/catkin_ws/
+
+roslaunch iq_gnc multi_spawn.launch
+```
+
+You will see the drones taking off and when they are holding a position in a concrete height, introduce the last command:
+
+```
+# last terminal, I promise
+cd ~/catkin_ws/
+
+rosrun iq_gnc fsm_dev.py
+
+```
+
+Now you
+
