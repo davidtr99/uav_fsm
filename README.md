@@ -80,4 +80,3 @@ Run SITL (Software In The Loop) once to set params:
 cd ~/ardupilot/ArduCopter
 sim_vehicle.py -w
 ```
-## IQ
