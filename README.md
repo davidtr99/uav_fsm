@@ -3,7 +3,7 @@
 ### Computational Methods In Artificial Life
 Authors: David Tejero Ruiz & Miguel Gil Castilla
 
-See [Demo Video](https://www.youtube.com/watch?v=0YLh8NuWhsM).
+[See Demo Video](https://www.youtube.com/watch?v=0YLh8NuWhsM).
 
 ## About
 This project aims to model the interacton of UAVs by using artificial forces. This architecture allows to generate emergent swarm behaviours from simpler individual rules. Automatic formation of regular polyhedron, obstable avoidance, follow-the-leader algorithm implementation, etc.
@@ -17,10 +17,20 @@ The used repositories have been forked and modified in order to implement a real
 - [IQ_SIM](https://github.com/davidtr99/iq_sim): Simulation Tools (only changed spawn angles in the file multi-drone.world)
 - [IQ_GNC](https://github.com/davidtr99/iq_gnc): Guidance Navigation Control using our forces model.
 
+# Matplotlib Simulation  
+To run our script and simulate the forces, simply run:
 
-\todo images
+```
+python3 fsm_uav.py
+```
 
-# Installation
+The required dependencies are Matplotlib, NumPy and Math.
+
+Note that you can change de script to modify the environment, adding diferent obstacles, making the desired center of mass move, etc.
+
+![All forces](images/f_full.png)
+
+# Gazebo Simulation Installation
 
 ## Ardupilot
 
@@ -196,6 +206,7 @@ The last commands will create four instances of the ardupilot SITL, which you wi
 
 Until you can see that each one is using the GPS, please do not continue with the tutorial.
 
+![Terminals](images/4_ventanas.png)
 ...
 
 All of them done? You are a beast, ok so we can keep going.
@@ -230,3 +241,4 @@ rosrun iq_gnc fsm_dev.py
 
 Now you can see the emerging behaviour caused by the force model algorithim.
 
+![UAVs](images/convergencia.png)
