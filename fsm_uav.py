@@ -138,7 +138,7 @@ while True:
     # Descomentar para mover el punto de interés 
     # Nota: sacar fuera de bucle la inicialización de cm
     # if i < 200:
-    #     cm += np.array([0.025,0.00,0.00])
+    #     cm += np.array([0.05,0.00,0.00])
 
     group_forces(uavs, cm)
     repulsion_forces(uavs, cm)
