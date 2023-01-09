@@ -4,16 +4,16 @@ from mpl_toolkits.mplot3d import Axes3D
 import math
 import time
 
+# Constantes del entorno
 MAP_SIZE = (10, 10, 10) # m x m x m
-
-N_OBSTACLES = 10
+N_OBSTACLES = 20
 N_UAVS = 4
 
+# Valores de las constantes de las fuerzas
 K_GROUP = 1.5
 K_REPULSION = 1.0
 K_FRICTION = 0.25
 K_OBSTACLES = 1.0
-
 VEL_MAX = 1.0   # m/s
 MIN_FORCE = 0.1
 
