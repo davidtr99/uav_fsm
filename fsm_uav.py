@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import math
-import time
 
 # Constantes del entorno
 MAP_SIZE = (10, 10, 10) # m x m x m
